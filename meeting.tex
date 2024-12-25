@@ -1,0 +1,76 @@
+\documentclass[10pt]{article}
+\usepackage[a4paper, left=1in, right=1in, top=1.5in, bottom=1.5in]{geometry}
+
+\usepackage{amsmath, amssymb, amsthm}  % For mathematical symbols
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{listings}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{claim}[theorem]{Claim}
+\newtheorem{definition}[theorem]{Definition}
+\newcommand{\RNum}[1]{\uppercase\expandafter{\romannumeral #1\relax}}
+
+\begin{document}
+
+\begin{center}
+    \huge 236828 - Project in Computer Systems \\
+    \vspace{0.5cm}
+    \Large Efficient TLB Partitioning for SMT Cores - cont. \\
+    \vspace{0.3cm}
+    \large Summery of team meetings.
+\end{center}
+
+\section{Introduction - December 12th 2024}
+We began by reviewing the main points of the pTLB paper and subsequently discussed the primary
+issues that led to its rejection. Some of the issues discussed include:
+\begin{itemize}
+    \item   The sample pool size was insufficient (see Table \RNum{4}).
+    \item   There are unexplained drops in performance in certain scenarios caused by our
+            implementation.
+    \item   The simulator used for the experiment wasn't published, which raised concerns about
+            reproducibility of the results.
+\end{itemize}
+
+Afterwards, we shifted focus to the tlbsim paper, examining its methodology and providing a
+high-level overview of how the simulator works. Specifically, we analyzed the definitions
+of sensitivity and aggressiveness, mentioned in page 8, as illustrated in Figure 7 and Table
+\RNum{5}. \\
+
+Idan proposed modifying the definitions of sensitivity and aggressiveness to reflect relative
+changes in CPI instead of absolute changes in miss rate.
+\[ sensitivity(B) = MKPI(pagescan \vert B) - MKPI(B) \]
+\[ \Rightarrow sensitivity(B) = \frac{CPI(pagescan \vert B) - CPI(B)}{CPI(B)} \]
+
+This suggestion aligns with our primary
+goal of minimizing CPI. Additionally, Idan highlighted the difference in miss penalty for
+a benchmark when run alongside different benchmarks, which could impact the results. \\
+
+\noindent
+Emily suggested a solution to address this difference by using a constant process, similar to
+\textit{pagescan}, to defined sensitivity and aggressivness like values for each benchmark
+\[ sensitivity^*(B) = \frac{MP(pagescan \vert B) - MP(B)}{MP(B)} \]
+
+Where \( MP(B) \) is the average miss penalty for process B. This approach insures unique values
+for each benchmark and provide a better metric for distinguishing benchmarks.
+
+\subsection{Assignments for next meeting}
+Replicate the results seen in Figure 7 and Table \RNum{5} on danger40 and employ the
+miss penalty metric mentioned above.
+
+% Read sim paper,
+% on Fig 7 we can see benchmarks'
+%
+% try to theorize the CPI for each bechmark by running it against pagescan and getting
+% a unique identifier for each benchmark
+%
+% Idan suggested nomalizing the value by CPI
+%
+% install perf
+%
+% need sudo to creat local dir under /home-local/emily.d
+%
+% run memsim-example
+
+\end{document}
